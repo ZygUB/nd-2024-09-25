@@ -1,25 +1,61 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
 
-function App() {
+const TodoApp = () => {
+  const [todos, setTodos] = useState([]);
+  const [inputValue, setInputValue] = useState('');
+
+  const addTodo = () => {
+    if (inputValue.trim()) {
+      setTodos([...todos, { text: inputValue, completed: false }]);
+      setInputValue('');
+    }
+  };
+
+  const toggleTodo = (index) => {
+    const updatedTodos = todos.map((todo, i) =>
+      i === index ? { ...todo, completed: !todo.completed } : todo
+    );
+    setTodos(updatedTodos);
+  };
+
+  const removeTodo = (index) => {
+    const updatedTodos = todos.filter((_, i) => i !== index);
+    setTodos(updatedTodos);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{ margin: '20px' }}>
+      <h1>Užduočių sąrašas</h1>
+      <div>
+        <input
+          type="text"
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          placeholder="Įveskite užduotį..."
+        />
+        <button onClick={addTodo}>Pridėti</button>
+      </div>
+      <ul style={{ listStyle: 'none', padding: 0 }}>
+        {todos.map((todo, index) => (
+          <li key={index} style={{ display: 'flex', alignItems: 'center' }}>
+            <span
+              onClick={() => toggleTodo(index)}
+              style={{
+                textDecoration: todo.completed ? 'line-through' : 'none',
+                cursor: 'pointer',
+                flexGrow: 1,
+              }}
+            >
+              {todo.text}
+            </span>
+            <button onClick={() => removeTodo(index)} style={{ marginLeft: '10px' }}>
+              Pašalinti
+            </button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
-}
+};
 
-export default App;
+export default TodoApp;
